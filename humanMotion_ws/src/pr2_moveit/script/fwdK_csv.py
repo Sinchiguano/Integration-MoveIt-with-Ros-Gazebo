@@ -85,13 +85,6 @@ class move_group(object):
         joint_goal=group.get_random_joint_values()
 
         #===============================
-        '''Creating my CSV file'''
-        self.csv_file(joint_goal)#go to my method csvfile with the joint_goal
-        #It is better to create a copy instead of passing the value directly, it will overwrite.
-        print "============ Joint values: "
-        #print(self.tmp_joints)
-        #print(joint_goal)#for debugging
-
         for i in range(len(joint_goal)):
             print(i,self.tmp_joints[i],joint_goal[i])
         print('################################')
@@ -103,6 +96,14 @@ class move_group(object):
 
         print "============ Waiting while RVIZ displays plan..."
         self.box_alert()
+        ######################################################
+        '''Creating my CSV file'''
+        self.csv_file(joint_goal)#go to my method csvfile with the joint_goal
+        #It is better to create a copy instead of passing the value directly, it will overwrite.
+        print "============ Joint values: "
+        #print(self.tmp_joints)
+        #print(joint_goal)#for debugging
+
         print('Counte:',counter)
         print('done!!!')
 
