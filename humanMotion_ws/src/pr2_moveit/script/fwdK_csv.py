@@ -17,6 +17,7 @@ from math import pi
 from std_msgs.msg import String
 from moveit_commander.conversions import pose_to_list
 import csv
+import time
 
 
 
@@ -51,6 +52,9 @@ class move_group(object):
                       'r_forearm_roll_joint',
                       'r_wrist_flex_joint',
                       'r_wrist_roll_joint']
+
+
+
         self.name_file='joint_data.csv'
         with open(self.name_file, 'wb') as csvfile:
             filewriter = csv.writer(csvfile, delimiter=',',quotechar='|', quoting=csv.QUOTE_MINIMAL)
@@ -71,8 +75,6 @@ class move_group(object):
         print "============ Joint values: "
         for i in range(len(joint_goal)):
             print(i,self.tmp_joints[i],joint_goal[i])
-        #print('joint_goal')
-        #print(joint_goal)
 
         group.set_joint_value_target(joint_goal)
 
@@ -85,12 +87,6 @@ class move_group(object):
         print('Counte:',counter)
         print('done!!!')
 
-    def csv_file(self,joint_list):
-        #Opening a file with the 'a' parameter allows you to append to the end of the file instead of simply overwriting the existing content.
-        with open(self.name_file, 'a') as csvfile:
-            filewriter = csv.writer(csvfile, delimiter=',',quotechar='|', quoting=csv.QUOTE_MINIMAL)
-            filewriter.writerow(joint_list)
-
     def box_alert(self):
         box_pose = geometry_msgs.msg.PoseStamped()
         box_pose.header.frame_id = self.group.get_planning_frame()
@@ -99,30 +95,20 @@ class move_group(object):
         box_pose.pose.position.z = 0.5;
         box_pose.pose.orientation.w = 0.5
         box_name = "box"
-        import time
+
         for i in range(12):
             self.scene.add_box(box_name, box_pose, size=(0.1, 0.1, 0.1))
             time.sleep(0.3)
             self.scene.remove_world_object(box_name)
             time.sleep(0.3)
 
+    def csv_file(self,joint_list):
+        #Opening a file with the 'a' parameter allows you to append to the end of the file instead of simply overwriting the existing content.
+        with open(self.name_file, 'a') as csvfile:
+            filewriter = csv.writer(csvfile, delimiter=',',quotechar='|', quoting=csv.QUOTE_MINIMAL)
+            filewriter.writerow(joint_list)
 
-def group_python():
-    print "============ Press `Enter` to start (press ctrl-d to exit) ......"
-    raw_input()
-    demoOBJECT = move_group()
-    counter=0
-    while(True):
-        print "\n============ Press `Enter` to execute a movement using a joint state goal ..."
-        raw_input()
-        counter+=1
-        demoOBJECT.go_to_joint_state(counter)
 
-if __name__=='__main__':
-    try:
-        group_python()
-    except rospy.ROSInterruptException:
-        pass
 
 
 

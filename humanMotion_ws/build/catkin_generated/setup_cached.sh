@@ -7,7 +7,4 @@
 # new environment variables
 
 # modified environment variables
-export CMAKE_PREFIX_PATH="/home/casch/Dropbox/humanMotion_ws/devel:$CMAKE_PREFIX_PATH"
 export PWD="/home/casch/Dropbox/humanMotion_ws/build"
-export ROSLISP_PACKAGE_DIRECTORIES="/home/casch/Dropbox/humanMotion_ws/devel/share/common-lisp"
-export ROS_PACKAGE_PATH="/home/casch/Dropbox/humanMotion_ws/src:$ROS_PACKAGE_PATH"

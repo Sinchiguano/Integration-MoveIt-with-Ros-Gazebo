@@ -7,6 +7,7 @@
 subdirs(gtest)
 subdirs(pr2_simulator/pr2_controller_configuration_gazebo)
 subdirs(pr2_simulator/pr2_simulator)
+subdirs(pose_estimation)
 subdirs(pr2_moveit)
 subdirs(pr2_simulator/pr2_gazebo_plugins)
 subdirs(pr2_simulator/pr2_gazebo)
