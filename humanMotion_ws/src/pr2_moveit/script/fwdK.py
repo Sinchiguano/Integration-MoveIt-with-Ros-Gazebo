@@ -19,7 +19,7 @@ from moveit_commander.conversions import pose_to_list
 
 
 
-class move_group_python(object):
+class move_group(object):
 
     def __init__(self):
         ''' First initialize moveit_commander and rospy.'''
@@ -67,6 +67,8 @@ class move_group_python(object):
         group.set_joint_value_target(joint_goal)
 
         plan = group.plan()
+        #When working with the real robot uncomment the following line...
+        group.execute(plan)
 
         print "============ Waiting while RVIZ displays plan..."
         self.box_alert()
@@ -92,7 +94,7 @@ class move_group_python(object):
 def group_python():
     print "============ Press `Enter` to start (press ctrl-d to exit) ......"
     raw_input()
-    demoOBJECT = move_group_python()
+    demoOBJECT = move_group()
     counter=0
     while(True):
         print "\n============ Press `Enter` to execute a movement using a joint state goal ..."
