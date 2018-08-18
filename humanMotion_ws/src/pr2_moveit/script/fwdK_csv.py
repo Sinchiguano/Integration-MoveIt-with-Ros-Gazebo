@@ -128,7 +128,7 @@ class move_group(object):
         with open(self.name_file, 'a') as csvfile:
             filewriter = csv.writer(csvfile, delimiter=',',quotechar='|', quoting=csv.QUOTE_MINIMAL)
             tmp_frame=self.cv2_frame()
-            tmp_pose_list=pose_estimation(tmp_frame)
+            tmp_pose_list=self.pose_estimation_img(tmp_frame)
             #joint_list.append(tmp_pose_list)
             for i in tmp_pose_list:
                 tmp_list.append(i)
@@ -136,26 +136,25 @@ class move_group(object):
     #Take a picture
     def cv2_frame(self):
         cap = cv2.VideoCapture(0)
-
         while(True):
             # Capture frame-by-frame
             ret, frame = cap.read()
 
-            # Our operations on the frame come here
-            #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-
-            # Display the resulting frame
-            cv2.imshow('frame',frame)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
+            if ret == True:
+                #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                cv2.imshow('frame',frame)
+                if cv2.waitKey(30) & 0xFF == ord('q'):
+                    cv2.imwrite('tmp.jpg',frame)
+                    break
+            else:
                 break
-
         # When everything done, release the capture
         cap.release()
         cv2.destroyAllWindows()
         return frame
     def pose_estimation_img(self,frame):
         aux=list()
-        aux[1,2,3]
+        aux=[1,2,3]
         return aux
 
 

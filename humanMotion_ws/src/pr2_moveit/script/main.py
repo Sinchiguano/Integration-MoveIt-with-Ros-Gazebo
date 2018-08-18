@@ -9,13 +9,17 @@
 """
 
 """
-from fwdK_csv import *
+#from fwdK_csv import *
+from class_helper import *
 
 
 def main():
     print "============ Press `Enter` to start (press ctrl-d to exit) ......"
     raw_input()
     demoOBJECT = move_group()
+
+    demoOBJECT.pose_estimation_img()
+    exit(0)
 
     counter=0
     while(True):
