@@ -21,7 +21,12 @@ import time
 import copy
 
 
-
+import numpy as np
+import cv2
+import sys
+import time
+from tqdm import *
+from matplotlib import pyplot as plt
 class move_group(object):
 
     def __init__(self):
@@ -115,24 +120,49 @@ class move_group(object):
 
     def csv_file(self,joint_list):
         #Opening a file with the 'a' parameter allows you to append to the end of the file instead of simply overwriting the existing content.
-        tmp_frame=list()
         tmp_list=copy.copy(joint_list)#it is a good approach to create copy in order not to overwrite the arguments.
-
         with open(self.name_file, 'a') as csvfile:
             filewriter = csv.writer(csvfile, delimiter=',',quotechar='|', quoting=csv.QUOTE_MINIMAL)
-
             tmp_frame=self.cv2_frame()
-            #tmp_pose_list=pose_estimation(tmp_frame)
+            tmp_pose_list=pose_estimation(tmp_frame)
             #joint_list.append(tmp_pose_list)
-            for i in tmp_frame:
+            for i in tmp_pose_list:
                 tmp_list.append(i)
             filewriter.writerow(tmp_list)
     #Take a picture
     def cv2_frame(self):
-        img=list()
-        print('Hello cv2 frame')
-        img=[1,2,3]
-        return img
+
+        cap = cv2.VideoCapture(0)
+
+        pbar = tqdm(ascii=True)
+        counter=0
+        while(True):
+            counter=counter+1
+            # Capture frame-by-frame
+            _, frame = cap.read()# A frame of a video is simply an image
+
+            cv2.imshow('image',frame)
+            k = cv2.waitKey(0)
+            if k == 27:         # wait for ESC key to exit
+                cv2.destroyAllWindows()
+            elif k == ord('s'): # wait for 's' key to save and exit
+                cv2.imwrite('messigray.png',img)
+                cv2.destroyAllWindows()
+            pbar.update(counter)
+            time.sleep(0.01)
+        pbar.close()
+        #==================================================================
+        # When everything done, release the video capture object
+        cap.release()
+        # Closes all the frames
+        cv2.destroyAllWindows()
+        return frame
+    def pose_estimation_img(self,frame):
+        aux=list()
+        aux[1,2,3]
+        return aux
+
+
 
 
 
