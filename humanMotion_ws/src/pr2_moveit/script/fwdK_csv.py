@@ -17,16 +17,14 @@ from math import pi
 from std_msgs.msg import String
 from moveit_commander.conversions import pose_to_list
 import csv
-import time
 import copy
-
-
 import numpy as np
 import cv2
 import sys
 import time
 from tqdm import *
 from matplotlib import pyplot as plt
+
 class move_group(object):
 
     def __init__(self):
@@ -73,6 +71,11 @@ class move_group(object):
                 if (i==6)or(i==7)or(i==8):
                     self.header.append(self.part[i])
             filewriter.writerow(self.header)
+        #DEFAULT PARAMETERS
+        self.resize='432x368'#Recommends : 432x368
+        self.resize_to_default=True
+        self.resize_out_ratio=4.0#default
+
 
     def go_to_joint_state(self,counter):
         group = self.group
@@ -131,30 +134,22 @@ class move_group(object):
             filewriter.writerow(tmp_list)
     #Take a picture
     def cv2_frame(self):
-
         cap = cv2.VideoCapture(0)
 
-        pbar = tqdm(ascii=True)
-        counter=0
         while(True):
-            counter=counter+1
             # Capture frame-by-frame
-            _, frame = cap.read()# A frame of a video is simply an image
+            ret, frame = cap.read()
 
-            cv2.imshow('image',frame)
-            k = cv2.waitKey(0)
-            if k == 27:         # wait for ESC key to exit
-                cv2.destroyAllWindows()
-            elif k == ord('s'): # wait for 's' key to save and exit
-                cv2.imwrite('messigray.png',img)
-                cv2.destroyAllWindows()
-            pbar.update(counter)
-            time.sleep(0.01)
-        pbar.close()
-        #==================================================================
-        # When everything done, release the video capture object
+            # Our operations on the frame come here
+            #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+            # Display the resulting frame
+            cv2.imshow('frame',frame)
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+
+        # When everything done, release the capture
         cap.release()
-        # Closes all the frames
         cv2.destroyAllWindows()
         return frame
     def pose_estimation_img(self,frame):
