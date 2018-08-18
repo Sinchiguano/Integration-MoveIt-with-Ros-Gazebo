@@ -1,3 +1,3 @@
 # Integration-MoveIt-with-Ros-Gazebo
-Introduction
-This repository contains ROS packages necessary for building OROCOS libraries, plugins, and components which communicate with the ROS messaging system and the ROS parameter server.
+# Introduction
+This repository contains ROS packages necessary for building the integration amongst MoveIt, and ROS gazebo for the PR2 robot.
