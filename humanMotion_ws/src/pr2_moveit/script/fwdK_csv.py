@@ -18,6 +18,7 @@ from std_msgs.msg import String
 from moveit_commander.conversions import pose_to_list
 import csv
 import time
+import copy
 
 
 
@@ -44,7 +45,7 @@ class move_group(object):
         '''Instantiate a `PlanningSceneInterface`_ object.  This object is an interface
         to the world surrounding the robot:'''
         self.scene = moveit_commander.PlanningSceneInterface()
-        self.tmp_joints=list()
+
         self.tmp_joints=['r_shoulder_pan_joint',
                       'r_shoulder_lift_joint',
                       'r_upper_arm_roll_joint',
@@ -52,14 +53,21 @@ class move_group(object):
                       'r_forearm_roll_joint',
                       'r_wrist_flex_joint',
                       'r_wrist_roll_joint']
+        self.part=['RAnkle = 0','RKnee = 1','RHip = 2','LHip = 3',
+                    'LKnee = 4','LAnkle = 5','RWrist = 6',
+                    'RElbow = 7','RShoulder = 8','LShoulder = 9',
+                    'LElbow = 10','LWrist = 11','Neck = 12','Head = 13']
 
-
+        self.header= copy.copy(self.tmp_joints)
 
         self.name_file='joint_data.csv'
+
         with open(self.name_file, 'wb') as csvfile:
             filewriter = csv.writer(csvfile, delimiter=',',quotechar='|', quoting=csv.QUOTE_MINIMAL)
-            filewriter.writerow(self.tmp_joints)
-
+            for i in range(len(self.part)):
+                if (i==6)or(i==7)or(i==8):
+                    self.header.append(self.part[i])
+            filewriter.writerow(self.header)
 
     def go_to_joint_state(self,counter):
         group = self.group
@@ -70,12 +78,15 @@ class move_group(object):
 
         #===============================
         '''Creating my CSV file'''
-        self.csv_file(joint_goal)
-
+        self.csv_file(joint_goal)#go to my method csvfile with the joint_goal
+        #It is better to create a copy instead of passing the value directly, it will overwrite.
         print "============ Joint values: "
+        #print(self.tmp_joints)
+        #print(joint_goal)#for debugging
+
         for i in range(len(joint_goal)):
             print(i,self.tmp_joints[i],joint_goal[i])
-
+        print('################################')
         group.set_joint_value_target(joint_goal)
 
         plan = group.plan()
@@ -104,10 +115,24 @@ class move_group(object):
 
     def csv_file(self,joint_list):
         #Opening a file with the 'a' parameter allows you to append to the end of the file instead of simply overwriting the existing content.
+        tmp_frame=list()
+        tmp_list=copy.copy(joint_list)#it is a good approach to create copy in order not to overwrite the arguments.
+
         with open(self.name_file, 'a') as csvfile:
             filewriter = csv.writer(csvfile, delimiter=',',quotechar='|', quoting=csv.QUOTE_MINIMAL)
-            filewriter.writerow(joint_list)
 
+            tmp_frame=self.cv2_frame()
+            #tmp_pose_list=pose_estimation(tmp_frame)
+            #joint_list.append(tmp_pose_list)
+            for i in tmp_frame:
+                tmp_list.append(i)
+            filewriter.writerow(tmp_list)
+    #Take a picture
+    def cv2_frame(self):
+        img=list()
+        print('Hello cv2 frame')
+        img=[1,2,3]
+        return img
 
 
 
