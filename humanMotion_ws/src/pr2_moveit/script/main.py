@@ -18,8 +18,8 @@ def main():
     raw_input()
     demoOBJECT = move_group()
 
-    demoOBJECT.pose_estimation_img()
-    exit(0)
+    #demoOBJECT.pose_estimation_img()
+    #exit(0)
 
     counter=0
     while(True):

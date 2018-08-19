@@ -68,7 +68,7 @@ class move_group(object):
 
         plan = group.plan()
         #When working with the real robot uncomment the following line...
-        group.execute(plan)
+        #group.execute(plan)
 
         print "============ Waiting while RVIZ displays plan..."
         self.box_alert()

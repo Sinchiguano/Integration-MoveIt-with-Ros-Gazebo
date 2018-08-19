@@ -126,13 +126,15 @@ class move_group(object):
             filewriter = csv.writer(csvfile, delimiter=',',quotechar='|', quoting=csv.QUOTE_MINIMAL)
             self.cv2_frame()
             tmp_pose_list=self.pose_estimation_img()
-            #joint_list.append(tmp_pose_list)
             for i in tmp_pose_list:
                 tmp_list.append(i)
             filewriter.writerow(tmp_list)
 
     def cv2_frame(self):
         cap = cv2.VideoCapture(0)
+        print('====================================================================')
+        print('Push "Q key" to get a sample pic in order to generate the keypoints!')
+        print('=====================================================================')
         while(True):
             # Capture frame-by-frame
             ret, frame = cap.read()
@@ -141,14 +143,13 @@ class move_group(object):
                 #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
                 cv2.imshow('frame',frame)
                 if cv2.waitKey(30) & 0xFF == ord('q'):
-                    cv2.imwrite(self.image_path,frame)
+                    #cv2.imwrite(self.image_path,frame)
                     break
             else:
                 break
         # When everything done, release the capture
         cap.release()
         cv2.destroyAllWindows()
-        return frame
 
     def pose_estimation_img(self):
         #Load the image
@@ -190,23 +191,17 @@ class move_group(object):
 
         #Colors and color conversions>>Convert image to RGB color for matplotlib
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-
         # show image with matplotlib
         self.plotting(img)
 
-        return points_2d
+        return tmp
 
     def plotting(self,img):
         plt.figure('Pose Estimation!')
         plt.title('Result!')
         plt.imshow(img)
-        plt.show()
-
-
-
-
-
-
-'''
+        plt.pause(3)
+        plt.close()
+    '''
 https://github.com/ros-planning/moveit/blob/kinetic-devel/moveit_commander/src/moveit_commander/move_group.py
 '''
