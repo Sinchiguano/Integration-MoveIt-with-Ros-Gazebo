@@ -135,7 +135,7 @@ class move_group(object):
     def cv2_frame(self):
         cap = cv2.VideoCapture(0)
         print('====================================================================')
-        print('Push "Q key" to get a sample pic in order to generate the keypoints!')
+        print('Press "Q key" to get a sample pic in order to generate the keypoints!')
         print('=====================================================================')
         pbar = tqdm(ascii=True)
         counter1=0
