@@ -1,0 +1,8 @@
+prefix=/home/casch/Dropbox/humanMotion_ws/devel
+
+Name: model
+Description: Description of model
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/casch/Dropbox/humanMotion_ws/devel/lib 
+Requires: 
