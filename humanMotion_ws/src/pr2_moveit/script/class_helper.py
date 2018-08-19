@@ -72,6 +72,7 @@ class move_group(object):
 
         self.model_add='./mobilenet_thin/graph_opt.pb'
         self.image_path='temp.jpg'
+        self.image_path1='temp2.jpg'
 
 
 
@@ -138,13 +139,19 @@ class move_group(object):
         while(True):
             # Capture frame-by-frame
             ret, frame = cap.read()
+            print(ret)
+            time.sleep(0.2)
 
             if ret == True:
                 #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
                 cv2.imshow('frame',frame)
                 if cv2.waitKey(30) & 0xFF == ord('q'):
-                    #cv2.imwrite(self.image_path,frame)
+                    cv2.imwrite(self.image_path1,frame)
+                    cap.release()
+                    cv2.destroyAllWindows()
                     break
+                else:
+                    print('hello')
             else:
                 break
         # When everything done, release the capture
@@ -201,7 +208,6 @@ class move_group(object):
         plt.title('Result!')
         plt.imshow(img)
         plt.pause(3)
-        plt.close()
     '''
 https://github.com/ros-planning/moveit/blob/kinetic-devel/moveit_commander/src/moveit_commander/move_group.py
 '''
