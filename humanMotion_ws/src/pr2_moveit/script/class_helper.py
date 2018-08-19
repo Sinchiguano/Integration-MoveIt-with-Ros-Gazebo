@@ -49,16 +49,17 @@ class move_group(object):
                     'LKnee = 4','LAnkle = 5','RWrist = 6',
                     'RElbow = 7','RShoulder = 8','LShoulder = 9',
                     'LElbow = 10','LWrist = 11','Neck = 12','Head = 13']
-
+        self.part_xy=['RWrist = 6x','RWrist = 6y',
+                        'RElbow = 7x','RElbow = 7y',
+                        'RShoulder = 8x','RShoulder = 8y']
         self.header= copy.copy(self.tmp_joints)
 
-        self.name_file='joint_data.csv'
+        self.name_file='joint_data3.csv'
 
         with open(self.name_file, 'wb') as csvfile:
             filewriter = csv.writer(csvfile, delimiter=',',quotechar='|', quoting=csv.QUOTE_MINIMAL)
-            for i in range(len(self.part)):
-                if (i==6)or(i==7)or(i==8):
-                    self.header.append(self.part[i])
+            for i in range(len(self.part_xy)):
+                self.header.append(self.part_xy[i])
             filewriter.writerow(self.header)
         #DEFAULT PARAMETERS
         self.resize='432x368'#Recommends : 432x368
@@ -136,11 +137,14 @@ class move_group(object):
         print('====================================================================')
         print('Push "Q key" to get a sample pic in order to generate the keypoints!')
         print('=====================================================================')
+        pbar = tqdm(ascii=True)
+        counter1=0
         while(True):
+            counter1+=1
             # Capture frame-by-frame
             ret, frame = cap.read()
-            print(ret)
-            time.sleep(0.2)
+            #print(ret)
+            #time.sleep(0.1)
 
             if ret == True:
                 #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -150,10 +154,13 @@ class move_group(object):
                     cap.release()
                     cv2.destroyAllWindows()
                     break
-                else:
-                    print('hello')
+                #else:
+                #    print('hello')
             else:
                 break
+            pbar.update(counter1)
+            time.sleep(0.01)
+        pbar.close()
         # When everything done, release the capture
         cap.release()
         cv2.destroyAllWindows()
@@ -179,9 +186,14 @@ class move_group(object):
 
         tmp=list()
         aux=[]
+        tmptmp=list
+        tmp_xy=[]
         for i in range(len(points_2d)):
             #print(self.part[i],':',points_2d[i])
             if (i==6)or(i==7)or(i==8):
+                tmptmp=list(points_2d[i])
+                tmp_xy.append(tmptmp[0])
+                tmp_xy.append(tmptmp[1])
                 tmp.append(list(points_2d[i]))
                 aux.append(self.part[i])
 
@@ -201,7 +213,7 @@ class move_group(object):
         # show image with matplotlib
         self.plotting(img)
 
-        return tmp
+        return tmp_xy
 
     def plotting(self,img):
         plt.figure('Pose Estimation!')
