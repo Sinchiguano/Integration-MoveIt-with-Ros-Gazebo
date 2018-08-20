@@ -54,7 +54,8 @@ class move_group(object):
                         'RShoulder = 8x','RShoulder = 8y']
         self.header= copy.copy(self.tmp_joints)
 
-        self.name_file='joint_data3.csv'
+        self.name_file='joint_data_tmp.csv'
+        
 
         with open(self.name_file, 'wb') as csvfile:
             filewriter = csv.writer(csvfile, delimiter=',',quotechar='|', quoting=csv.QUOTE_MINIMAL)
@@ -139,6 +140,9 @@ class move_group(object):
         print('=====================================================================')
         pbar = tqdm(ascii=True)
         counter1=0
+
+        import time
+        time_out = time.time() + 15
         while(True):
             counter1+=1
             # Capture frame-by-frame
@@ -149,7 +153,7 @@ class move_group(object):
             if ret == True:
                 #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
                 cv2.imshow('frame',frame)
-                if cv2.waitKey(30) & 0xFF == ord('q'):
+                if cv2.waitKey(30) & 0xFF == ord('q') or time.time()>time_out:
                     cv2.imwrite(self.image_path1,frame)
                     cap.release()
                     cv2.destroyAllWindows()
@@ -167,7 +171,7 @@ class move_group(object):
 
     def pose_estimation_img(self):
         #Load the image
-        img= cv2.imread(self.image_path, cv2.IMREAD_COLOR)
+        img= cv2.imread(self.image_path1, cv2.IMREAD_COLOR)
 
         #Resize image before they are processed.
         w, h = map(int, self.resize.split('x'))

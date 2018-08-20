@@ -1,6 +1,6 @@
 set(_CATKIN_CURRENT_PACKAGE "model")
 set(model_VERSION "0.0.0")
-set(model_MAINTAINER "casch <casch@todo.todo>")
+set(model_MAINTAINER "casch <cesarsinchiguano@hotmail.es>")
 set(model_PACKAGE_FORMAT "2")
 set(model_BUILD_DEPENDS "roscpp" "rospy" "std_msgs")
 set(model_BUILD_EXPORT_DEPENDS "roscpp" "rospy" "std_msgs")
