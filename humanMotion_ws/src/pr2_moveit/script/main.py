@@ -25,8 +25,7 @@ def main():
     while(True):
         print "\n============ Press `Enter` to execute a movement using a joint state goal ..."
         raw_input()
-        counter+=1
-        demoOBJECT.go_to_joint_state(counter)
+        demoOBJECT.go_to_joint_state()
 
 if __name__=='__main__':
     try:

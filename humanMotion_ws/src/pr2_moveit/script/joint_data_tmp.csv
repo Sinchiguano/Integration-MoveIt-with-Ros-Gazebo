@@ -1,0 +1,2 @@
+r_shoulder_pan_joint,r_shoulder_lift_joint,r_upper_arm_roll_joint,r_elbow_flex_joint,r_forearm_roll_joint,r_wrist_flex_joint,r_wrist_roll_joint,RWrist = 6x,RWrist = 6y,RElbow = 7x,RElbow = 7y,RShoulder = 8x,RShoulder = 8y
+-1.0923080217876673,0.9902420646592044,-0.9301787081174551,-1.2910296343220167,2.0790991976611766,-0.43714319306891425,-0.9601165732805232,0,0,0,0,0,0

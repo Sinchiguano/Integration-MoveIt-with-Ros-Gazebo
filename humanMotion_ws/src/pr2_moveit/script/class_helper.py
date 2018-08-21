@@ -55,7 +55,7 @@ class move_group(object):
         self.header= copy.copy(self.tmp_joints)
 
         self.name_file='joint_data_tmp.csv'
-        
+
 
         with open(self.name_file, 'wb') as csvfile:
             filewriter = csv.writer(csvfile, delimiter=',',quotechar='|', quoting=csv.QUOTE_MINIMAL)
@@ -73,13 +73,16 @@ class move_group(object):
         self.resize_out_ratio=4.0#default
 
         self.model_add='./mobilenet_thin/graph_opt.pb'
-        self.image_path='temp.jpg'
-        self.image_path1='temp2.jpg'
+        self.image_path='tmp.jpg'
+        self.init_counter=0
 
 
 
-    def go_to_joint_state(self,counter):
+
+    def go_to_joint_state(self):
+        running=True
         group = self.group
+        self.init_counter+=1;#save in the memory
 
         ## Planning to a joint-space goal
         joint_goal=group.get_random_joint_values()
@@ -95,19 +98,21 @@ class move_group(object):
         #group.execute(plan)
 
         print "============ Waiting while RVIZ displays plan..."
-        self.box_alert()
+        self.box_alert(running)
+        running=False
 
         '''Creating my CSV file'''
-        self.csv_file(joint_goal)#go to my method csvfile with the joint_goal
+        self.csv_file(joint_goal)#go to my method csv file with the joint_goal
+        self.box_alert(running)
         #It is better to create a copy instead of passing the value directly, it will overwrite.
         print "============ Joint values: "
         #print(self.tmp_joints)
         #print(joint_goal)#for debugging
 
-        print('Counte:',counter)
+        print('Counte:',self.init_counter)
         print('done!!!')
 
-    def box_alert(self):
+    def box_alert(self,running):
         box_pose = geometry_msgs.msg.PoseStamped()
         box_pose.header.frame_id = self.group.get_planning_frame()
         box_pose.pose.position.x =0;
@@ -115,20 +120,22 @@ class move_group(object):
         box_pose.pose.position.z = 0.5;
         box_pose.pose.orientation.w = 0.5
         box_name = "box"
-
-        for i in range(12):
+        if running:#show the box
             self.scene.add_box(box_name, box_pose, size=(0.1, 0.1, 0.1))
-            time.sleep(0.3)
+        else:
             self.scene.remove_world_object(box_name)
-            time.sleep(0.3)
 
     def csv_file(self,joint_list):
         #Opening a file with the 'a' parameter allows you to append to the end of the file instead of simply overwriting the existing content.
         tmp_list=copy.copy(joint_list)#it is a good approach to create copy in order not to overwrite the arguments.
-        with open(self.name_file, 'a') as csvfile:
+        with open(self.name_file, 'a') as csvfile:# a means append
             filewriter = csv.writer(csvfile, delimiter=',',quotechar='|', quoting=csv.QUOTE_MINIMAL)
+            #Opening the webcamera to get a frame
             self.cv2_frame()
+            #Get the pose estimation from the frame above
             tmp_pose_list=self.pose_estimation_img()
+            #Append coordinates X and Y of my shoulder, elbow and wrist to my
+            # my joints list and save them in the csv file.
             for i in tmp_pose_list:
                 tmp_list.append(i)
             filewriter.writerow(tmp_list)
@@ -141,25 +148,19 @@ class move_group(object):
         pbar = tqdm(ascii=True)
         counter1=0
 
-        import time
-        time_out = time.time() + 15
+        time_out = time.time() + 10
         while(True):
             counter1+=1
             # Capture frame-by-frame
             ret, frame = cap.read()
-            #print(ret)
-            #time.sleep(0.1)
 
             if ret == True:
-                #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
                 cv2.imshow('frame',frame)
                 if cv2.waitKey(30) & 0xFF == ord('q') or time.time()>time_out:
-                    cv2.imwrite(self.image_path1,frame)
+                    cv2.imwrite(self.image_path,frame)
                     cap.release()
                     cv2.destroyAllWindows()
                     break
-                #else:
-                #    print('hello')
             else:
                 break
             pbar.update(counter1)
@@ -171,7 +172,7 @@ class move_group(object):
 
     def pose_estimation_img(self):
         #Load the image
-        img= cv2.imread(self.image_path1, cv2.IMREAD_COLOR)
+        img= cv2.imread(self.image_path, cv2.IMREAD_COLOR)
 
         #Resize image before they are processed.
         w, h = map(int, self.resize.split('x'))
@@ -207,7 +208,6 @@ class move_group(object):
 
         for i in range(len(tmp)):
             print(aux[i],tmp[i])
-
 
         # draw points and draw lines
         img= TfPoseEstimator.draw_humans(img, poseESTIMATION, imgcopy=False)
