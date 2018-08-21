@@ -14,7 +14,8 @@ It has an application about controlling a robotic arm in a real-time using the f
 The codes were written in python and use ROS platform as a programming environment, and also the simulation can be displayed with the help of ROS Rviz................
 
 
-I am still working on this repository... Next update is to work with pose estimation of the human hand in order to manipulate the gripper of my robot, everything would be in real time!!!!....... keep waiting!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+I am still working on this repository... Next update is to work with pose estimation of the human hand in order to manipulate the gripper of my robot, everything as to controlling the robot and gripper will be in real time with the help of the web camera!!!!....... keep waiting!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 
 By: Casch
 
