@@ -5,7 +5,7 @@
 # Introduction
 This repository contains ROS packages necessary for building the integration amongst MoveIt, and ROS gazebo for the PR2 robot. 
 As well as a class to save the joint values in a csv format.
-It has [Realtime Multi-Person Pose Estimation] (https://github.com/ZheC/Realtime_Multi-Person_Pose_Estimation)
+It has [Realtime Multi-Person Pose Estimation page link](https://github.com/ZheC/Realtime_Multi-Person_Pose_Estimation)
  
 **If you have some model like that, please feel free to contribute it !!**
 
