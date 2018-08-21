@@ -148,7 +148,7 @@ class move_group(object):
         pbar = tqdm(ascii=True)
         counter1=0
 
-        time_out = time.time() + 10
+        time_out = time.time() + 20
         while(True):
             counter1+=1
             # Capture frame-by-frame
@@ -223,7 +223,7 @@ class move_group(object):
         plt.figure('Pose Estimation!')
         plt.title('Result!')
         plt.imshow(img)
-        plt.pause(3)
+        plt.pause(4)
     '''
 https://github.com/ros-planning/moveit/blob/kinetic-devel/moveit_commander/src/moveit_commander/move_group.py
 '''
