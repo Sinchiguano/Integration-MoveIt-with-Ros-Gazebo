@@ -1,5 +1,5 @@
 
-![top_page](/image/1.png)
+![top_page](/.image/1.png)
 
 This Repository has [YASKAWA Corp's MOTOMAN](https://www.yaskawa.eu.com/en/products/robotic/motoman-robots/) 3D CAD models.  
 At least, every series has STL & COLLADA models and these files are used as [ROS](http://www.ros.org/) description's mesh file.  
