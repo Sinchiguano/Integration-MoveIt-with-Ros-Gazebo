@@ -54,14 +54,15 @@ class move_group(object):
                         'RShoulder = 8x','RShoulder = 8y']
         self.header= copy.copy(self.tmp_joints)
 
-        self.name_file='joint_data_tmp.csv'
+        self.name_file='joint_data.csv'
 
 
-        with open(self.name_file, 'wb') as csvfile:
-            filewriter = csv.writer(csvfile, delimiter=',',quotechar='|', quoting=csv.QUOTE_MINIMAL)
-            for i in range(len(self.part_xy)):
-                self.header.append(self.part_xy[i])
-            filewriter.writerow(self.header)
+        # with open(self.name_file, 'wb') as csvfile:
+        #     filewriter = csv.writer(csvfile, delimiter=',',quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        #     for i in range(len(self.part_xy)):
+        #         self.header.append(self.part_xy[i])
+        #     filewriter.writerow(self.header)
+
         #DEFAULT PARAMETERS
         self.resize='432x368'#Recommends : 432x368
         self.resize_to_default=True
@@ -93,17 +94,20 @@ class move_group(object):
 
         group.set_joint_value_target(joint_goal)
 
-        plan = group.plan()
-        #When working with the real robot uncomment the following line...
-        #group.execute(plan)
-
         print "============ Waiting while RVIZ displays plan..."
         self.box_alert(running)
         running=False
+        plan = group.plan()
+        #When working with the real robot uncomment the following line...
+        #group.execute(plan)
+        import time
+        time.sleep(18)
+        self.box_alert(running)
+        print('Imitate the robot movement, please!!!')
 
         '''Creating my CSV file'''
         self.csv_file(joint_goal)#go to my method csv file with the joint_goal
-        self.box_alert(running)
+
         #It is better to create a copy instead of passing the value directly, it will overwrite.
         print "============ Joint values: "
         #print(self.tmp_joints)
@@ -148,7 +152,7 @@ class move_group(object):
         pbar = tqdm(ascii=True)
         counter1=0
 
-        time_out = time.time() + 20
+        time_out = time.time() + 10
         while(True):
             counter1+=1
             # Capture frame-by-frame
