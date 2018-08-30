@@ -17,7 +17,17 @@ import sys
 from sklearn.model_selection import cross_val_score
 from sklearn.metrics import accuracy_score
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.model_selection import train_test_split
 
+from sklearn.multioutput import MultiOutputRegressor
+from sklearn.metrics import mean_squared_error
+from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.neural_network import MLPRegressor
+
+import keras
+from keras.models import Sequential
+from keras.layers import Dense, Dropout, Activation
+from keras.optimizers import SGD
 
 
 
@@ -64,7 +74,6 @@ def main():
     #print(y_data[:5])
 
     ####################################################
-    from sklearn.model_selection import train_test_split
     X_train, X_test, y_train, y_test = train_test_split(X_data, y_data,test_size=0.15)
     #print(y_train[:5])
     #print(y_test[:5])
@@ -76,37 +85,21 @@ def main():
     print('y_test.shape',y_test.shape)
     #exit(0)
     #===================================================
-    # Support vector classification with RBF kernel
+    # MODELS
     #====================================================
-
-
-
-
-    from sklearn.multioutput import MultiOutputRegressor
-    from sklearn.metrics import mean_squared_error
-    from sklearn.ensemble import GradientBoostingRegressor
-    from sklearn.neural_network import MLPRegressor
 
     #Create a model!!!
     clf1 = RandomForestRegressor(n_estimators=10)
     clf2=MultiOutputRegressor(GradientBoostingRegressor(n_estimators=10))
     clf3 = MLPRegressor(solver='lbfgs',hidden_layer_sizes=(2,3))
 
-
-
      #Training step
-
     clf1.fit(X_train,y_train)
     clf2.fit(X_train,y_train)
     clf3.fit(X_train,y_train)
 
-    import keras
-    from keras.models import Sequential
-    from keras.layers import Dense, Dropout, Activation
-    from keras.optimizers import SGD
-
     model = Sequential()
-    model.add(Dense(64, activation='relu', input_dim=6))
+    model.add(Dense(20, activation='relu', input_dim=6))
     model.add(Dropout(0.5))
     model.add(Dense(64, activation='relu'))
     model.add(Dropout(0.5))
@@ -124,43 +117,35 @@ def main():
     y_hat2=clf2.predict(X_test)
     y_hat3=clf3.predict(X_test)
     y_hat4=model.predict(X_test)
-    print('=========================')
-    print('=========================')
-    print(y_hat3[1])
-    print('##')
-    print(y_hat4[1])
 
-
+    print('=========================')
     #Accuracy!!!
-    print('\nThe training and testing accuracies when simple split is used:')
-    mse1 = compute_err_MSE(y_test, y_hat1)#mean_squared_error(y_test, y_hat1)
-    mse2 = compute_err_MSE(y_test, y_hat2)#mean_squared_error(y_test, y_hat2)
+    # print('\nThe training and testing accuracies when simple split is used:')
+    # mse1 = compute_err_MSE(y_test, y_hat1)#mean_squared_error(y_test, y_hat1)
+    # mse2 = compute_err_MSE(y_test, y_hat2)#mean_squared_error(y_test, y_hat2)
 
 
 
     print('==============')
-    #print(mse1)
     print('Training:',mean_squared_error(y_train, clf1.predict(X_train)))
     print('Testing:',mean_squared_error(y_test, y_hat1))
 
     print('==============')
-    #print(mse2)
     print('Training:',mean_squared_error(y_train, clf2.predict(X_train)))
     print('Testing:',mean_squared_error(y_test, y_hat2))
 
     print('==============')
-    #print(mse3)
     print('Training:',mean_squared_error(y_train, clf3.predict(X_train)))
     print('Testing:',mean_squared_error(y_test, y_hat3))
 
     print('==============')
-    #print(mse4)
     print('Training:',mean_squared_error(y_train, model.predict(X_train)))
     print('Testing:',mean_squared_error(y_test, y_hat4))
     print(model.evaluate(X_test, y_test))
+    print('==============')
     scores = model.evaluate(X_test, y_test, verbose=0)
     print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
-    scores = model.evaluate(X_test, y_test, verbose=0)
+    scores = model.evaluate(X_train, y_train, verbose=0)
     print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
 
 
@@ -177,6 +162,38 @@ def main():
     from keras.models import model_from_json
     import numpy,h5py
     import os
+
+    # serialize model to JSON
+    model_json = model.to_json()
+    with open("model.json", "w") as json_file:
+        json_file.write(model_json)
+    # serialize weights to HDF5
+    model.save_weights("model.h5")
+    print("Saved model to disk")
+    print('======================================')
+
+    # later...
+    # load json and create model
+    json_file = open('model.json', 'r')
+    loaded_model_json = json_file.read()
+    json_file.close()
+    loaded_model = model_from_json(loaded_model_json)
+    # load weights into new model
+    loaded_model.load_weights("model.h5")
+    print("Loaded model from disk")
+    print('======================================')
+
+    # evaluate loaded model on test data
+    loaded_model.compile(loss='categorical_crossentropy',
+                  optimizer=sgd,
+                  metrics=['accuracy'])
+    score = loaded_model.evaluate(X_test, y_test, verbose=0)
+    print("%s: %.2f%%" % (loaded_model.metrics_names[1], score[1]*100))
+    scores = loaded_model.evaluate(X_train, y_train, verbose=0)
+    print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
+
+
+
 
 
 
