@@ -30,7 +30,8 @@ from keras.layers import Dense, Dropout, Activation
 from keras.optimizers import SGD
 
 
-
+from sklearn.datasets.samples_generator import make_regression
+from sklearn import datasets
 file_name='joint_data.csv'
 joints=['r_shoulder_pan_joint','r_shoulder_lift_joint','r_upper_arm_roll_joint',
         'r_elbow_flex_joint','r_forearm_roll_joint','r_wrist_flex_joint',
@@ -40,10 +41,8 @@ def csv_as_dataframe():
     """Load 'csv file and return dataframe"""
     tmp_data= pd.read_csv(file_name)
     X_=tmp_data[['RWrist = 6x','RWrist = 6y','RElbow = 7x','RElbow = 7y','RShoulder = 8x','RShoulder = 8y']]
-    y_=tmp_data[['r_shoulder_pan_joint','r_shoulder_lift_joint',
-                'r_upper_arm_roll_joint',
-                'r_elbow_flex_joint','r_forearm_roll_joint',
-                'r_wrist_flex_joint','r_wrist_roll_joint']]
+    y_=tmp_data[joints]
+
     tmp_out=tmp_data[joints]
     print('joints')
     #print(tmp_data.head(3))
@@ -64,7 +63,6 @@ def main():
     #print(y_data.head(5 ))
     #sys.exit(0)
 
-
     # Scale the data
     sc = preprocessing.StandardScaler()
     #X_data= sc.fit_transform(X_data)
@@ -74,7 +72,7 @@ def main():
     #print(y_data[:5])
 
     ####################################################
-    X_train, X_test, y_train, y_test = train_test_split(X_data, y_data,test_size=0.10)
+    X_train, X_test, y_train, y_test = train_test_split(X_data, y_data,test_size=0.25)
     #print(y_train[:5])
     #print(y_test[:5])
     print('\nShapes of training and testing X:')
@@ -89,8 +87,9 @@ def main():
     #====================================================
 
     #Create a model!!!
-    clf1 = RandomForestRegressor(n_estimators=10)
-    clf2=MultiOutputRegressor(GradientBoostingRegressor(n_estimators=10))
+    clf1 =  RandomForestRegressor(max_depth=30, random_state=2)
+    #clf2=MultiOutputRegressor(RandomForestRegressor(max_depth=30,random_state=0))
+    clf2 = MultiOutputRegressor(GradientBoostingRegressor(random_state=0))
     clf3 = MLPRegressor(solver='lbfgs',hidden_layer_sizes=(2,3))
 
      #Training step
@@ -126,27 +125,27 @@ def main():
 
 
 
-    print('==============')
+    print('=====RandomForestRegressor=====')
     print('Training:',mean_squared_error(y_train, clf1.predict(X_train)))
     print('Testing:',mean_squared_error(y_test, y_hat1))
-
-    print('==============')
+    print()
+    print('====MultiOutputRegressor======')
     print('Training:',mean_squared_error(y_train, clf2.predict(X_train)))
     print('Testing:',mean_squared_error(y_test, y_hat2))
-
-    print('==============')
+    print()
+    print('========MLPRegressor=========')
     print('Training:',mean_squared_error(y_train, clf3.predict(X_train)))
     print('Testing:',mean_squared_error(y_test, y_hat3))
-
-    print('==============')
+    print()
+    print('=====keras.models=========')
     print('Training:',mean_squared_error(y_train, model.predict(X_train)))
     print('Testing:',mean_squared_error(y_test, y_hat4))
-    print(model.evaluate(X_test, y_test))
+    #print(model.evaluate(X_test, y_test))
     print('==============')
     scores = model.evaluate(X_test, y_test, verbose=0)
-    print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
+    print("Test: %s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
     scores = model.evaluate(X_train, y_train, verbose=0)
-    print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
+    print("Training:%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
 
 
 
@@ -191,9 +190,6 @@ def main():
     # print("%s: %.2f%%" % (loaded_model.metrics_names[1], score[1]*100))
     # scores = loaded_model.evaluate(X_train, y_train, verbose=0)
     # print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
-
-
-
 
 
 
