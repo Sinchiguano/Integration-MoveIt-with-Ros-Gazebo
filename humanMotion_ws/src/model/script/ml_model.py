@@ -36,15 +36,16 @@ file_name='joint_data.csv'
 joints=['r_shoulder_pan_joint','r_shoulder_lift_joint','r_upper_arm_roll_joint',
         'r_elbow_flex_joint','r_forearm_roll_joint','r_wrist_flex_joint',
         'r_wrist_roll_joint']
+posexy=['RWrist = 6x','RWrist = 6y','RElbow = 7x','RElbow = 7y','RShoulder = 8x','RShoulder = 8y']
 
 def csv_as_dataframe():
     """Load 'csv file and return dataframe"""
     tmp_data= pd.read_csv(file_name)
-    X_=tmp_data[['RWrist = 6x','RWrist = 6y','RElbow = 7x','RElbow = 7y','RShoulder = 8x','RShoulder = 8y']]
-    y_=tmp_data[joints]
+    X_=tmp_data[posexy].values[:,:]
+    y_=tmp_data[joints].values[:,:]
 
-    tmp_out=tmp_data[joints]
-    print('joints')
+    #tmp_out=tmp_data[joints]
+    #print('joints')
     #print(tmp_data.head(3))
     #return X_,y_
     return X_,y_
@@ -58,29 +59,34 @@ def compute_err_MSE(y, yhat):
 def main():
     print('=================')
     X_data,y_data=csv_as_dataframe()
-    print('data for training')
-    #print(X_data.head(5))
-    #print(y_data.head(5 ))
+    # print('data for training')
+    # print('=================')
+    # print('X_data:\n',X_data[:1])
+    # print('y_data:\n',y_data[:1])
     #sys.exit(0)
 
-    # Scale the data
-    sc = preprocessing.StandardScaler()
-    #X_data= sc.fit_transform(X_data)
-    print('=================')
-    print(type(X_data))
-    #print(X_data[:5])
-    #print(y_data[:5])
-
+    # # Scale the data
+    # sc = preprocessing.StandardScaler()
+    # X_data= sc.fit_transform(X_data)
+    # print('=================')
+    # print(type(X_data))
+    # print(X_data[:5])
+    # print(y_data[:5])
+    #exit(0)
     ####################################################
     X_train, X_test, y_train, y_test = train_test_split(X_data, y_data,test_size=0.25)
-    #print(y_train[:5])
-    #print(y_test[:5])
-    print('\nShapes of training and testing X:')
-    print('X_train.shape',X_train.shape)
-    print('X_test.shape',X_test.shape)
-    print('Shapes of training and testing y:')
-    print('y_train.shape',y_train.shape)
-    print('y_test.shape',y_test.shape)
+    # print(y_train[:5])
+    # print(y_test[:5])
+    # print('\nShapes of training and testing X:')
+    # print('X_train.shape',X_train.shape)
+    # print('X_test.shape',X_test.shape)
+    # print('Shapes of training and testing y:')
+    # print('y_train.shape',y_train.shape)
+    # print('y_test.shape',y_test.shape)
+    print('X_test')
+    print(type(X_test))
+    print('values:',X_test[:3])
+    print('shape',X_test[:3].shape)
     #exit(0)
     #===================================================
     # MODELS
@@ -109,10 +115,20 @@ def main():
                   optimizer=sgd,
                   metrics=['accuracy'])
     model.fit(X_train, y_train)
-
+    print('--------------------')
     #Make predictions!!!
+    sample=X_test[0,:]
+    print(sample.shape)
+    print('reshape')
+    sample=sample.reshape((1,6))
+    print(sample.shape)
+    print(sample)
 
-    y_hat1=clf1.predict(X_test)
+    y_hat1=clf1.predict(sample)
+    print(X_test[0,:])
+    print('y_hat1')
+    print(y_hat1)
+    exit(0)
     y_hat2=clf2.predict(X_test)
     y_hat3=clf3.predict(X_test)
     y_hat4=model.predict(X_test)
@@ -152,15 +168,15 @@ def main():
     #======================================
     # #Save my training model for machine learning algorithm done in python
     # from sklearn.externals import joblib
-    #
-    # filename = 'pre-trained_model.sav'
-    # joblib.dump(model, filename)
+    
+    # filename = 'pre_trained_model.sav'
+    # joblib.dump(clf3, filename)
     # #loaded_model = joblib.load(filename)
 
 
-    from keras.models import model_from_json
-    import numpy,h5py
-    import os
+    # from keras.models import model_from_json
+    # import numpy,h5py
+    # import os
 
     # # serialize model to JSON
     # model_json = model.to_json()
@@ -170,7 +186,7 @@ def main():
     # model.save_weights("model.h5")
     # print("Saved model to disk")
     # print('======================================')
-    #
+    
     # # later...
     # # load json and create model
     # json_file = open('model.json', 'r')
@@ -181,7 +197,7 @@ def main():
     # loaded_model.load_weights("model.h5")
     # print("Loaded model from disk")
     # print('======================================')
-    #
+    
     # # evaluate loaded model on test data
     # loaded_model.compile(loss='categorical_crossentropy',
     #               optimizer=sgd,

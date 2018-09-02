@@ -76,6 +76,8 @@ class move_group(object):
         self.model_add='./mobilenet_thin/graph_opt.pb'
         self.image_path='tmp.jpg'
         self.init_counter=0
+        self.tmpName=str(self.init_counter)+self.image_path
+        #print(self.tmpName)
 
 
 
@@ -101,11 +103,14 @@ class move_group(object):
         #When working with the real robot uncomment the following line...
         #group.execute(plan)
         import time
-        time.sleep(18)
+        time.sleep(10)
         self.box_alert(running)
-        print('Imitate the robot movement, please!!!')
+        print "============ Press `Enter` to record the movement...!!! (press ctrl-d to exit) ......"
+        raw_input()
+        print "============ Twelve seconds to go for recroding the movement..."
 
         '''Creating my CSV file'''
+        self.tmpName=str(self.init_counter)+self.image_path
         self.csv_file(joint_goal)#go to my method csv file with the joint_goal
 
         #It is better to create a copy instead of passing the value directly, it will overwrite.
@@ -147,12 +152,9 @@ class move_group(object):
     def cv2_frame(self):
         cap = cv2.VideoCapture(0)
         print('====================================================================')
-        print('Press "Q key" to get a sample pic in order to generate the keypoints!')
-        print('=====================================================================')
         pbar = tqdm(ascii=True)
         counter1=0
-
-        time_out = time.time() + 10
+        time_out = time.time() + 12
         while(True):
             counter1+=1
             # Capture frame-by-frame
@@ -161,7 +163,7 @@ class move_group(object):
             if ret == True:
                 cv2.imshow('frame',frame)
                 if cv2.waitKey(30) & 0xFF == ord('q') or time.time()>time_out:
-                    cv2.imwrite(self.image_path,frame)
+                    cv2.imwrite(self.tmpName,frame)
                     cap.release()
                     cv2.destroyAllWindows()
                     break
@@ -176,7 +178,7 @@ class move_group(object):
 
     def pose_estimation_img(self):
         #Load the image
-        img= cv2.imread(self.image_path, cv2.IMREAD_COLOR)
+        img= cv2.imread(self.tmpName, cv2.IMREAD_COLOR)
 
         #Resize image before they are processed.
         w, h = map(int, self.resize.split('x'))
