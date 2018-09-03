@@ -66,28 +66,28 @@ def main():
     #sys.exit(0)
 
     # # Scale the data
-    # sc = preprocessing.StandardScaler()
-    # X_data= sc.fit_transform(X_data)
+    sc = preprocessing.StandardScaler()
+    X_data= sc.fit_transform(X_data)
     # print('=================')
     # print(type(X_data))
     # print(X_data[:5])
     # print(y_data[:5])
     #exit(0)
     ####################################################
-    X_train, X_test, y_train, y_test = train_test_split(X_data, y_data,test_size=0.25)
+    X_train, X_test, y_train, y_test = train_test_split(X_data, y_data,test_size=0.10)
     # print(y_train[:5])
     # print(y_test[:5])
-    # print('\nShapes of training and testing X:')
-    # print('X_train.shape',X_train.shape)
-    # print('X_test.shape',X_test.shape)
-    # print('Shapes of training and testing y:')
-    # print('y_train.shape',y_train.shape)
-    # print('y_test.shape',y_test.shape)
+    print('\nShapes of training and testing X:')
+    print('X_train.shape',X_train.shape)
+    print('X_test.shape',X_test.shape)
+    print('Shapes of training and testing y:')
+    print('y_train.shape',y_train.shape)
+    print('y_test.shape',y_test.shape)
     print('X_test')
     print(type(X_test))
-    print('values:',X_test[:3])
-    print('shape',X_test[:3].shape)
-    #exit(0)
+    # print('values:',X_test[:3])
+    # print('shape',X_test[:3].shape)
+    # exit(0)
     #===================================================
     # MODELS
     #====================================================
@@ -115,20 +115,23 @@ def main():
                   optimizer=sgd,
                   metrics=['accuracy'])
     model.fit(X_train, y_train)
-    print('--------------------')
-    #Make predictions!!!
-    sample=X_test[0,:]
-    print(sample.shape)
-    print('reshape')
-    sample=sample.reshape((1,6))
-    print(sample.shape)
-    print(sample)
+    
 
-    y_hat1=clf1.predict(sample)
-    print(X_test[0,:])
-    print('y_hat1')
-    print(y_hat1)
-    exit(0)
+    print('--------------------')
+
+    #Make predictions!!!
+    # sample=X_test[0,:]
+    # print(sample.shape)
+    # print('reshape')
+    # sample=sample.reshape((1,6))
+    # print(sample.shape)
+    # print(sample)
+
+    y_hat1=clf1.predict(X_test)
+    # print(X_test[0,:])
+    # print('y_hat1')
+    # print(y_hat1)
+    #exit(0)
     y_hat2=clf2.predict(X_test)
     y_hat3=clf3.predict(X_test)
     y_hat4=model.predict(X_test)
@@ -166,46 +169,46 @@ def main():
 
 
     #======================================
-    # #Save my training model for machine learning algorithm done in python
-    # from sklearn.externals import joblib
+    #Save my training model for machine learning algorithm done in python
+    from sklearn.externals import joblib
     
-    # filename = 'pre_trained_model.sav'
-    # joblib.dump(clf3, filename)
-    # #loaded_model = joblib.load(filename)
+    filename = 'pre_trained_model.sav'
+    joblib.dump(clf3, filename)
+    #loaded_model = joblib.load(filename)
 
 
-    # from keras.models import model_from_json
-    # import numpy,h5py
-    # import os
+    from keras.models import model_from_json
+    import numpy,h5py
+    import os
 
-    # # serialize model to JSON
-    # model_json = model.to_json()
-    # with open("model.json", "w") as json_file:
-    #     json_file.write(model_json)
-    # # serialize weights to HDF5
-    # model.save_weights("model.h5")
-    # print("Saved model to disk")
-    # print('======================================')
+    # serialize model to JSON
+    model_json = model.to_json()
+    with open("model.json", "w") as json_file:
+        json_file.write(model_json)
+    # serialize weights to HDF5
+    model.save_weights("model.h5")
+    print("Saved model to disk")
+    print('======================================')
     
-    # # later...
-    # # load json and create model
-    # json_file = open('model.json', 'r')
-    # loaded_model_json = json_file.read()
-    # json_file.close()
-    # loaded_model = model_from_json(loaded_model_json)
-    # # load weights into new model
-    # loaded_model.load_weights("model.h5")
-    # print("Loaded model from disk")
-    # print('======================================')
+    # later...
+    # load json and create model
+    json_file = open('model.json', 'r')
+    loaded_model_json = json_file.read()
+    json_file.close()
+    loaded_model = model_from_json(loaded_model_json)
+    # load weights into new model
+    loaded_model.load_weights("model.h5")
+    print("Loaded model from disk")
+    print('======================================')
     
-    # # evaluate loaded model on test data
-    # loaded_model.compile(loss='categorical_crossentropy',
-    #               optimizer=sgd,
-    #               metrics=['accuracy'])
-    # score = loaded_model.evaluate(X_test, y_test, verbose=0)
-    # print("%s: %.2f%%" % (loaded_model.metrics_names[1], score[1]*100))
-    # scores = loaded_model.evaluate(X_train, y_train, verbose=0)
-    # print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
+    # evaluate loaded model on test data
+    loaded_model.compile(loss='categorical_crossentropy',
+                  optimizer=sgd,
+                  metrics=['accuracy'])
+    score = loaded_model.evaluate(X_test, y_test, verbose=0)
+    print("%s: %.2f%%" % (loaded_model.metrics_names[1], score[1]*100))
+    scores = loaded_model.evaluate(X_train, y_train, verbose=0)
+    print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
 
 
 
