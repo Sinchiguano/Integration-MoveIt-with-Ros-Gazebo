@@ -154,7 +154,7 @@ class move_group(object):
         print('====================================================================')
         pbar = tqdm(ascii=True)
         counter1=0
-        time_out = time.time() + 12
+        time_out = time.time() + 8
         while(True):
             counter1+=1
             # Capture frame-by-frame
