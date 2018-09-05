@@ -57,7 +57,7 @@ def main():
     from sklearn.preprocessing import StandardScaler
     scaler = StandardScaler()
 
-    X_train, X_test, y_train, y_test = train_test_split(X_data, y_data,test_size=0.25)
+    X_train, X_test, y_train, y_test = train_test_split(X_data, y_data,test_size=0.10)
 
     # Fit only to the training data
     scaler.fit(X_train)
@@ -66,6 +66,11 @@ def main():
     X_train = scaler.transform(X_train)
     X_test = scaler.transform(X_test)
 
+    # scaler.fit(y_train)
+    #
+    # # Now apply the transformations to the data:
+    # y_train = scaler.transform(y_train)
+    # y_test = scaler.transform(y_test)
 
     # print('\nShapes of training and testing X:')
     # print('X_train.shape',X_train.shape)
@@ -76,67 +81,45 @@ def main():
     # print('X_test')
 
 
-    #===================================================
-    # MODELS
-    # #Create a model
-    #====================================================
-    MLPRegressorModel = MLPRegressor(hidden_layer_sizes=(10,10,10,10),verbose=False)
-
-    # model = Sequential()
-    # model.add(Dense(20, activation='relu', input_dim=6))
-    # model.add(Dropout(0.5))
-    # model.add(Dense(64, activation='relu'))
-    # model.add(Dropout(0.5))
-    # model.add(Dense(7, activation='softmax'))
-    #
-    # sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
-    # model.compile(loss='categorical_crossentropy',
-    #               optimizer=sgd,
-    #               metrics=['accuracy'])
+    # create model
+    model = Sequential()
+    model.add(Dense(units=40, input_dim=6, kernel_initializer='normal', activation='relu'))
+    model.add(Dense(40, kernel_initializer='normal', activation='relu'))
+    model.add(Dense(40, kernel_initializer='normal', activation='relu'))
+    model.add(Dense(7, kernel_initializer='normal'))
+    # Compile model
+    # For a mean squared error regression problem
+    model.compile(loss='mean_squared_error', optimizer='rmsprop')
 
     # #Training step
 
-    MLPRegressorModel.fit(X_train,y_train)
-    # model.fit(X_train, y_train)
+    model.fit(X_train, y_train)
 
 
     # #Make predictions
-    y_hat3=MLPRegressorModel.predict(X_test)
-    # y_hat4=model.predict(X_test)
+    y_hat=model.predict(X_test)
+
+    #print('y_hat:',y_hat[:2])
 
 
 
     # #Accuracy!!!
 
-    print('\n========MLPRegressor=========\n')
-    print('Training:',mean_squared_error(y_train, MLPRegressorModel.predict(X_train)))
-    print('Testing:',mean_squared_error(y_test, y_hat3))
-
-
-    # print('\n=====keras.models=========\n')
-    # print('Training:',mean_squared_error(y_train, model.predict(X_train)))
-    # print('Testing:',mean_squared_error(y_test, y_hat4))
-    # scores = model.evaluate(X_test, y_test, verbose=0)
-    # print("Test: %s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
-    # scores = model.evaluate(X_train, y_train, verbose=0)
-    # print("Training:%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
+    print('\n=====keras.models=========\n')
+    print('Training:',mean_squared_error(y_train, model.predict(X_train)))
+    print('Testing:',mean_squared_error(y_test, y_hat))
+    #Mean mean_squared_error from Keras library
+    print('Mean mean_squared_error from Keras library from keras')
+    print(model.evaluate(X_test, y_test))
 
 
 
-    # #======================================
-    # #Save my training model for machine learning algorithm done in python
-    # from sklearn.externals import joblib
-    #
-    # filename = 'pre_trained_model.sav'
-    # joblib.dump(MLPRegressorModel, filename)
-    # #loaded_model = joblib.load(filename)
-    #
-    #
-    # from keras.models import model_from_json
-    # import numpy,h5py
-    # import os
-    #
-    # # serialize model to JSON
+    #======================================
+    from keras.models import model_from_json
+    import h5py
+
+
+    # serialize model to JSON
     # model_json = model.to_json()
     # with open("model.json", "w") as json_file:
     #     json_file.write(model_json)
@@ -146,25 +129,23 @@ def main():
     # print("Saved model to disk")
     # print('======================================')
 
-    # # later...
-    # # load json and create model
+    # print("\nLoaded model from disk")
+    # print('======================================\n')
+    #
     # json_file = open('model.json', 'r')
     # loaded_model_json = json_file.read()
     # json_file.close()
     # loaded_model = model_from_json(loaded_model_json)
     # # load weights into new model
     # loaded_model.load_weights("model.h5")
-    # print("Loaded model from disk")
-    # print('======================================')
+    #
     #
     # # evaluate loaded model on test data
-    # loaded_model.compile(loss='categorical_crossentropy',
-    #               optimizer=sgd,
-    #               metrics=['accuracy'])
-    # score = loaded_model.evaluate(X_test, y_test, verbose=0)
-    # print("%s: %.2f%%" % (loaded_model.metrics_names[1], score[1]*100))
-    # scores = loaded_model.evaluate(X_train, y_train, verbose=0)
-    # print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
+    #
+    # print('Training:',mean_squared_error(y_train, loaded_model.predict(X_train)))
+    # print('Testing:',mean_squared_error(y_test, loaded_model.predict(X_test)))
+    # loaded_model.compile(loss='mean_squared_error', optimizer='rmsprop')
+    # print('mse',loaded_model.evaluate(X_test, y_test))
 
 
 

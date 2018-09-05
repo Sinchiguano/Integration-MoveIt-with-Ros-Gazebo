@@ -31,6 +31,12 @@ def csv_as_dataframe():
     y_=tmp_data[joints].values[:,:]
     return X_,y_
 
+def compute_err_MSE(y, yhat):
+    """Return the mean squared error given the true values of y and predictions yhat."""
+    err=(yhat-y)**2
+    err=np.sum(err)/len(y)
+    return err
+
 def main():
 
     X_data,y_data=csv_as_dataframe()
@@ -47,47 +53,45 @@ def main():
     # Now apply the transformations to the data:
     X_train = scaler.transform(X_train)
     X_test = scaler.transform(X_test)
-    scaler.fit(y_train)
-    y_train=scaler.transform(y_train)
-    y_test =scaler.transform(y_test)
 
-
-
-    print('\nShapes of training and testing X:')
-    print('X_train.shape',X_train.shape)
-    print('X_test.shape',X_test.shape)
-    print('Shapes of training and testing y:')
-    print('y_train.shape',y_train.shape)
-    print('y_test.shape',y_test.shape)
-    print('X_test')
+    # print('\nShapes of training and testing X:')
+    # print('X_train.shape',X_train.shape)
+    # print('X_test.shape',X_test.shape)
+    # print('Shapes of training and testing y:')
+    # print('y_train.shape',y_train.shape)
+    # print('y_test.shape',y_test.shape)
+    # print('X_test')
 
 
 
     #MODEL
 
-    MLPRegressorModel = MLPRegressor(hidden_layer_sizes=(10,10,10),verbose=False)
+    MLPRegressorModel = MLPRegressor(hidden_layer_sizes=(10,10,10),activation='identity',solver='lbfgs',verbose=False)
 
     # #Training step
 
     MLPRegressorModel.fit(X_train,y_train)
 
     # #Make predictions
-    y_hat3=MLPRegressorModel.predict(X_test)
+    y_hat=MLPRegressorModel.predict(X_test)
 
     # #Accuracy!!!
 
     print('\n========MLPRegressor=========\n')
     print('Training:',mean_squared_error(y_train, MLPRegressorModel.predict(X_train)))
-    print('Testing:',mean_squared_error(y_test, y_hat3))
+    print('Testing:',mean_squared_error(y_test, y_hat))
 
+    print('my mean square error!!!')
+    print('Training:',compute_err_MSE(y_train, MLPRegressorModel.predict(X_train)))
+    print('Testing:',compute_err_MSE(y_test, y_hat))
 
     #======================================
     #Save my training model for machine learning algorithm done in python
     from sklearn.externals import joblib
-
+    #
     # filename = 'mlpRegressor_model.sav'
     # joblib.dump(MLPRegressorModel, filename)
-    #
+
     #loaded_model = joblib.load(filename)
 
 
