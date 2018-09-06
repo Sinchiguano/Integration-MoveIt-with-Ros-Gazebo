@@ -57,7 +57,7 @@ def main():
     from sklearn.preprocessing import StandardScaler
     scaler = StandardScaler()
 
-    X_train, X_test, y_train, y_test = train_test_split(X_data, y_data,test_size=0.10)
+    X_train, X_test, y_train, y_test = train_test_split(X_data, y_data,test_size=0.15)
 
     # Fit only to the training data
     scaler.fit(X_train)
@@ -119,7 +119,7 @@ def main():
     import h5py
 
 
-    # serialize model to JSON
+    ##serialize model to JSON
     # model_json = model.to_json()
     # with open("model.json", "w") as json_file:
     #     json_file.write(model_json)

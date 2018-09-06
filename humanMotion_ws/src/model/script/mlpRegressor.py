@@ -66,7 +66,7 @@ def main():
 
     #MODEL
 
-    MLPRegressorModel = MLPRegressor(hidden_layer_sizes=(10,10,10),activation='identity',solver='lbfgs',verbose=False)
+    MLPRegressorModel = MLPRegressor(hidden_layer_sizes=(40,20,10),activation='identity',solver='lbfgs',verbose=False)
 
     # #Training step
 
