@@ -76,6 +76,7 @@ class move_group(object):
         self.image_path='tmp.jpg'
         self.init_counter=0
         self.tmpName=str(self.init_counter)+self.image_path
+        self.joint_temp=self.group.get_random_joint_values()# default goal
         #print(self.tmpName)
 
 
@@ -87,7 +88,9 @@ class move_group(object):
         self.init_counter+=1;#save in the memory
 
         ## Planning to a joint-space goal
+
         joint_goal=group.get_random_joint_values()
+
 
         #===============================
         for i in range(len(joint_goal)):
