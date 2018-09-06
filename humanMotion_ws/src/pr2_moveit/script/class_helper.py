@@ -14,7 +14,6 @@ from libraries import *
 
 
 class move_group(object):
-
     def __init__(self):
         ''' First initialize moveit_commander and rospy.'''
         moveit_commander.roscpp_initialize(sys.argv)
@@ -154,7 +153,7 @@ class move_group(object):
         print('====================================================================')
         pbar = tqdm(ascii=True)
         counter1=0
-        time_out = time.time() + 8
+        time_out = time.time() + 7
         while(True):
             counter1+=1
             # Capture frame-by-frame
